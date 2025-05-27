@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+// Importa tus imágenes aquí
+// import imagen1 from '../assets/imagen1.jpg';
+// import imagen2 from '../assets/imagen2.jpg';
+
+// Reutilizamos las clases comunes
+const titleClasses = "text-3xl md:text-4xl font-bold text-[#CCFF00]";
+const textClasses = "text-lg text-white";
+const imageContainerClasses = "relative aspect-square";
+const sectionClasses = "space-y-6";
+const gridClasses = "grid md:grid-cols-2 gap-8 items-center";
+---
+
+<Layout title="Información">
+    <main class="min-h-screen bg-black p-8">
+        <div class="max-w-4xl mx-auto space-y-12">
+            <!-- Sección 1 -->
+            <section class={sectionClasses}>
+                <h2 class={titleClasses}>Título Sección 1</h2>
+                <div class={gridClasses}>
+                    <div class="space-y-4">
+                        <p class={textClasses}>
+                            Tu texto descriptivo aquí. Puedes escribir todo lo que quieras sobre esta sección.
+                        </p>
+                    </div>
+                    <div class={imageContainerClasses}>
+                        <!-- Reemplaza con tu imagen -->
+                        <div class="w-full h-full bg-[#CCFF00] opacity-20 rounded-lg"></div>
+                        <!-- <Image src={imagen1} alt="Descripción" class="rounded-lg object-cover" /> -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección 2 -->
+            <section class={sectionClasses}>
+                <h2 class={titleClasses}>Título Sección 2</h2>
+                <div class={gridClasses}>
+                    <div class={`${imageContainerClasses} order-2 md:order-1`}>
+                        <!-- Reemplaza con tu imagen -->
+                        <div class="w-full h-full bg-[#CCFF00] opacity-20 rounded-lg"></div>
+                        <!-- <Image src={imagen2} alt="Descripción" class="rounded-lg object-cover" /> -->
+                    </div>
+                    <div class="space-y-4 order-1 md:order-2">
+                        <p class={textClasses}>
+                            Tu texto descriptivo aquí. Puedes escribir todo lo que quieras sobre esta sección.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Puedes agregar más secciones siguiendo el mismo patrón -->
+        </div>
+    </main>
+</Layout> 
