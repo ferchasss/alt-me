@@ -1,0 +1,146 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Aquí puedes cambiar los textos que quieres mostrar
+const textos = [
+    { texto: "En lo profundo...", orden: 1 },
+    { texto: "no hay sombra", orden: 2 },
+    { texto: "hay semilla", orden: 3 }
+];
+
+// Clases comunes para los elementos
+const baseClasses = "texto-elemento text-[#CCFF00] cursor-move text-xl md:text-2xl lg:text-3xl font-normal absolute";
+const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-normal hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl";
+---
+
+<Layout title="Ordena">
+    <section class="w-full h-screen bg-black relative overflow-hidden">
+        <div class="textos-container">
+            {textos.map((item) => (
+                <div 
+                    class={baseClasses}
+                    draggable="true"
+                    data-order={item.orden}>
+                    {item.texto}
+                </div>
+            ))}
+        </div>
+    </section>
+
+    <script define:vars={{ buttonClasses, textos }}>
+        // Esperar a que el DOM esté listo
+        window.onload = function() {
+            // Función para generar posición aleatoria
+            function getRandomPosition() {
+                const maxX = window.innerWidth - 200;
+                const maxY = window.innerHeight - 100;
+                return {
+                    x: Math.random() * maxX,
+                    y: Math.random() * maxY
+                };
+            }
+
+            // Verifica si un elemento está cerca del centro
+            function isNearCenter(element) {
+                const rect = element.getBoundingClientRect();
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const elementCenterX = rect.left + rect.width / 2;
+                const elementCenterY = rect.top + rect.height / 2;
+                const margin = 200;
+                return Math.abs(elementCenterX - centerX) < margin && Math.abs(elementCenterY - centerY) < margin;
+            }
+
+            // Calcula la posición central para cada orden
+            function getCenterPosition(order) {
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const spacing = 80;
+                return {
+                    x: centerX - 200,
+                    y: centerY + (order - 2) * spacing
+                };
+            }
+
+            // Mueve todos los elementos a sus posiciones correctas en el centro
+            function snapAllToCenter() {
+                elementos.forEach(elemento => {
+                    const order = parseInt(elemento.getAttribute('data-order') || '0');
+                    const centerPos = getCenterPosition(order);
+                    elemento.style.transition = 'all 0.5s ease';
+                    elemento.style.left = `${centerPos.x}px`;
+                    elemento.style.top = `${centerPos.y}px`;
+                });
+            }
+
+            // Selecciona los elementos y los posiciona aleatoriamente
+            const elementos = document.querySelectorAll('.texto-elemento');
+            elementos.forEach(elemento => {
+                const pos = getRandomPosition();
+                elemento.style.left = `${pos.x}px`;
+                elemento.style.top = `${pos.y}px`;
+            });
+
+            let draggedItem = null;
+
+            elementos.forEach(texto => {
+                texto.addEventListener('dragstart', () => {
+                    draggedItem = texto;
+                    setTimeout(() => texto.style.opacity = '0.5', 0);
+                });
+
+                texto.addEventListener('dragend', () => {
+                    setTimeout(() => texto.style.opacity = '1', 0);
+                    // Si el elemento está cerca del centro, imantar todos
+                    if (isNearCenter(texto)) {
+                        snapAllToCenter();
+                    }
+                    draggedItem = null;
+                    checkOrder();
+                });
+
+                texto.addEventListener('dragover', e => {
+                    e.preventDefault();
+                });
+
+                texto.addEventListener('dragenter', e => {
+                    e.preventDefault();
+                });
+
+                texto.addEventListener('drop', e => {
+                    e.preventDefault();
+                    if (draggedItem !== texto) {
+                        const allTextos = [...elementos];
+                        const draggedIndex = allTextos.indexOf(draggedItem);
+                        const droppedIndex = allTextos.indexOf(texto);
+                        if (draggedIndex < droppedIndex) {
+                            texto.parentNode?.insertBefore(draggedItem, texto.nextSibling);
+                        } else {
+                            texto.parentNode?.insertBefore(draggedItem, texto);
+                        }
+                        checkOrder();
+                    }
+                });
+            });
+
+            // Verifica el orden y si están en el centro para mostrar el botón
+            function checkOrder() {
+                const currentOrder = [...elementos].map(texto => parseInt(texto.getAttribute('data-order') || '0'));
+                const isCorrect = currentOrder.every((order, index) => order === index + 1);
+                const allInCenter = [...elementos].every(isNearCenter);
+                if (isCorrect && allInCenter) {
+                    const container = document.querySelector('.textos-container');
+                    if (container) {
+                        const fraseCompleta = textos.map(t => t.texto).join(' ');
+                        container.innerHTML = `
+                            <a href="/info" 
+                               class="${buttonClasses} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-[90%] md:max-w-[80%] lg:max-w-[70%]">
+                                ${fraseCompleta}
+                            </a>
+                        `;
+                    }
+                }
+            }
+        };
+    </script>
+</Layout> 
