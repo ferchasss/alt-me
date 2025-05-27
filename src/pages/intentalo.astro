@@ -1,16 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets'; 
-import intentalo from '../assets/intentalo.png.jpg';    
+import intentalo from '../assets/intentalo.png.jpg';
 ---
 
 <Layout title="Inténtalo">
     <section class="w-full h-screen bg-black overflow-hidden">
         <Image src={intentalo} alt="Intentalo" class="w-full h-full object-cover absolute top-0 left-0" />
-        <a href="/frases" 
-           id="botonIntentalo"
-           class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-white px-6 py-3 border-2 border-white rounded-md text-lg cursor-pointer hidden min-w-[120px] max-w-[300px] whitespace-nowrap hover:bg-[#b3e600] transition-colors duration-300">
-            intentalo
+        <a 
+            href="/ordena" 
+            id="botonIntentalo"
+            class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-white px-6 py-6 rounded-md cursor-pointer hidden min-w-[120px] max-w-[300px] whitespace-nowrap hover:bg-[#b3e600] transition-all duration-300 text-xl md:text-2xl lg:text-3xl font-normal hover:font-bold hover:opacity-80">
+            Intentalo
         </a>
     </section>
 
