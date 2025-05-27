@@ -6,29 +6,14 @@ import Layout from '../layouts/Layout.astro';
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Me ves?</title>
+<Layout>
+    <section class="w-full h-full flex items-center justify-center absolute top-0 left-0">
+        <a href="/intentalo" class="texto-central text-5xl md:text-6xl lg:text-7xl uppercase hover:font-bold">
+            me ves?
+        </a>
+    </section>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
         .texto-central {
             font-size: clamp(2rem, 5vw, 3rem);
             text-align: center;
@@ -44,31 +29,6 @@ import Layout from '../layouts/Layout.astro';
             opacity: 0.8;
         }
 
-        /* Estilos específicos para móvil */
-        @media (max-width: 480px) {
-            .texto-central {
-                font-size: 2rem;
-            }
-        }
-
-        /* Estilos específicos para tablet */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .texto-central {
-                font-size: 2.5rem;
-            }
-        }
-
-        /* Estilos específicos para desktop */
-        @media (min-width: 769px) {
-            .texto-central {
-                font-size: 3rem;
-            }
-        }
+      
     </style>
-</head>
-<body>
-    <a href="/intentalo" class="texto-central">
-        me ves?
-    </a>
-</body>
-</html>
+</Layout>

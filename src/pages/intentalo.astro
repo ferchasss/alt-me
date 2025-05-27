@@ -1,93 +1,18 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets'; 
+import intentalo from '../assets/intentalo.png.jpg';    
 ---
 
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inténtalo</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            min-height: 100vh;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            padding: 0;
-            cursor: pointer;
-            background-image: url('/intentalo.png.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        body:hover {
-            background-size: 110% auto;
-        }
-
-        .boton {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #CCFF00;
-            color: #ffffff;
-            padding: clamp(10px, 3vw, 15px) clamp(20px, 5vw, 30px);
-            border: 2px solid #ffffff;
-            border-radius: 5px;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            cursor: pointer;
-            display: none;
-            width: auto;
-            min-width: 120px;
-            max-width: 300px;
-            white-space: nowrap;
-        }
-
-        .boton.visible {
-            display: block;
-        }
-
-        /* Estilos específicos para móvil */
-        @media (max-width: 480px) {
-            .boton {
-                bottom: 10px;
-                padding: 10px 20px;
-                font-size: 1rem;
-            }
-        }
-
-        /* Estilos específicos para tablet */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .boton {
-                bottom: 15px;
-                padding: 12px 25px;
-                font-size: 1.1rem;
-            }
-        }
-
-        /* Estilos específicos para desktop */
-        @media (min-width: 769px) {
-            .boton {
-                bottom: 20px;
-                padding: 15px 30px;
-                font-size: 1.2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <button class="boton" id="botonIntentalo">intentalo</button>
+<Layout title="Inténtalo">
+    <section class="w-full h-screen bg-black overflow-hidden">
+        <Image src={intentalo} alt="Intentalo" class="w-full h-full object-cover absolute top-0 left-0" />
+        <a href="/frases" 
+           id="botonIntentalo"
+           class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-white px-6 py-3 border-2 border-white rounded-md text-lg cursor-pointer hidden min-w-[120px] max-w-[300px] whitespace-nowrap hover:bg-[#b3e600] transition-colors duration-300">
+            intentalo
+        </a>
+    </section>
 
     <script>
         const boton = document.getElementById('botonIntentalo');
@@ -95,11 +20,10 @@
 
         document.body.addEventListener('click', () => {
             if (!botonVisible && boton) {
-                boton.classList.add('visible');
+                boton.classList.remove('hidden');
+                boton.classList.add('block');
                 botonVisible = true;
-                document.body.style.backgroundSize = '110% auto';
             }
         });
     </script>
-</body>
-</html> 
+</Layout> 
