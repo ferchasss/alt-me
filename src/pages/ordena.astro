@@ -9,8 +9,9 @@ const textos = [
 ];
 
 // Clases comunes para los elementos
-const baseClasses = "texto-elemento text-[#CCFF00] cursor-move text-xl md:text-2xl lg:text-3xl font-normal absolute";
+const baseClasses = "texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-normal absolute select-none";
 const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-normal hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl";
+const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300";
 ---
 
 <Layout title="Ordena">
@@ -24,6 +25,16 @@ const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-point
                     {item.texto}
                 </div>
             ))}
+            <!-- Indicadores de posición -->
+            <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8">
+                {textos.map((_, index) => (
+                    <div 
+                        class={`${indicatorClasses} w-[400px] h-[80px] flex items-center justify-center`}
+                        style={`top: ${index * 120}px;`}
+                        data-slot={index + 1}>
+                    </div>
+                ))}
+            </div>
         </div>
     </section>
 
@@ -40,36 +51,48 @@ const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-point
                 };
             }
 
-            // Verifica si un elemento está cerca del centro
-            function isNearCenter(element) {
+            // Verifica si un elemento está cerca de un slot específico
+            function isNearSlot(element, slotIndex) {
                 const rect = element.getBoundingClientRect();
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
+                const slots = document.querySelectorAll('[data-slot]');
+                const targetSlot = slots[slotIndex];
+                const slotRect = targetSlot.getBoundingClientRect();
+                
                 const elementCenterX = rect.left + rect.width / 2;
                 const elementCenterY = rect.top + rect.height / 2;
+                const slotCenterX = slotRect.left + slotRect.width / 2;
+                const slotCenterY = slotRect.top + slotRect.height / 2;
+                
                 const margin = 200;
-                return Math.abs(elementCenterX - centerX) < margin && Math.abs(elementCenterY - centerY) < margin;
+                return Math.abs(elementCenterX - slotCenterX) < margin && 
+                       Math.abs(elementCenterY - slotCenterY) < margin;
             }
 
             // Calcula la posición central para cada orden
             function getCenterPosition(order) {
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
-                const spacing = 80;
+                const slots = document.querySelectorAll('[data-slot]');
+                const targetSlot = slots[order - 1];
+                const slotRect = targetSlot.getBoundingClientRect();
+                
                 return {
-                    x: centerX - 200,
-                    y: centerY + (order - 2) * spacing
+                    x: slotRect.left + (slotRect.width / 2) - 100,
+                    y: slotRect.top + (slotRect.height / 2) - 20
                 };
             }
 
-            // Mueve todos los elementos a sus posiciones correctas en el centro
-            function snapAllToCenter() {
-                elementos.forEach(elemento => {
+            // Mueve un elemento a su posición correcta
+            function snapToPosition(element, order) {
+                const pos = getCenterPosition(order);
+                element.style.transition = 'all 0.5s ease';
+                element.style.left = `${pos.x}px`;
+                element.style.top = `${pos.y}px`;
+            }
+
+            // Verifica si todos los elementos están en sus slots correctos
+            function areAllInCorrectSlots() {
+                return [...elementos].every((elemento, index) => {
                     const order = parseInt(elemento.getAttribute('data-order') || '0');
-                    const centerPos = getCenterPosition(order);
-                    elemento.style.transition = 'all 0.5s ease';
-                    elemento.style.left = `${centerPos.x}px`;
-                    elemento.style.top = `${centerPos.y}px`;
+                    return isNearSlot(elemento, order - 1);
                 });
             }
 
@@ -84,17 +107,26 @@ const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-point
             let draggedItem = null;
 
             elementos.forEach(texto => {
-                texto.addEventListener('dragstart', () => {
+                texto.addEventListener('dragstart', (e) => {
                     draggedItem = texto;
-                    setTimeout(() => texto.style.opacity = '0.5', 0);
+                    texto.style.cursor = 'grabbing';
+                    texto.style.transform = 'scale(1.1)';
+                    texto.style.opacity = '0.5';
+                    texto.style.zIndex = '2';
                 });
 
                 texto.addEventListener('dragend', () => {
-                    setTimeout(() => texto.style.opacity = '1', 0);
-                    // Si el elemento está cerca del centro, imantar todos
-                    if (isNearCenter(texto)) {
-                        snapAllToCenter();
+                    texto.style.cursor = 'grab';
+                    texto.style.transform = 'scale(1)';
+                    texto.style.opacity = '1';
+                    texto.style.zIndex = '1';
+                    
+                    // Verificar si está cerca de algún slot
+                    const order = parseInt(texto.getAttribute('data-order') || '0');
+                    if (isNearSlot(texto, order - 1)) {
+                        snapToPosition(texto, order);
                     }
+                    
                     draggedItem = null;
                     checkOrder();
                 });
@@ -127,8 +159,9 @@ const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-point
             function checkOrder() {
                 const currentOrder = [...elementos].map(texto => parseInt(texto.getAttribute('data-order') || '0'));
                 const isCorrect = currentOrder.every((order, index) => order === index + 1);
-                const allInCenter = [...elementos].every(isNearCenter);
-                if (isCorrect && allInCenter) {
+                
+                // Solo si todos están en sus slots correctos y en orden correcto, mostramos el botón
+                if (areAllInCorrectSlots() && isCorrect) {
                     const container = document.querySelector('.textos-container');
                     if (container) {
                         const fraseCompleta = textos.map(t => t.texto).join(' ');
