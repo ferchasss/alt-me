@@ -6,9 +6,9 @@ import Layout from '../layouts/Layout.astro';
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-    <section class="w-full h-full flex items-center justify-center absolute top-0 left-0">
-        <a href="/intentalo" class="texto-central text-5xl md:text-6xl lg:text-7xl  hover:font-bold">
+<Layout title="Inicio">
+    <section class="w-full h-full flex items-center justify-center absolute top-0 left-0 font-sans">
+        <a href="/intentalo" class="texto-central text-5xl md:text-6xl lg:text-7xl hover:font-bold font-light tracking-wide">
             Me ves?
         </a>
     </section>
@@ -28,7 +28,5 @@ import Layout from '../layouts/Layout.astro';
         .texto-central:hover {
             opacity: 0.8;
         }
-
-      
     </style>
 </Layout>
