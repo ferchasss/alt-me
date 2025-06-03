@@ -9,14 +9,14 @@ const textos = [
 ];
 
 // Clases comunes para los elementos
-const baseClasses = "texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-normal absolute select-none";
-const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-normal hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl";
+const baseClasses = "texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-light tracking-wide absolute select-none font-sans transition-all duration-300";
+const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-light tracking-wide hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl font-sans";
 const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300";
 ---
 
 <Layout title="Ordena">
-    <section class="w-full h-screen bg-black relative overflow-hidden">
-        <div class="textos-container">
+    <section class="w-full h-screen bg-black relative overflow-hidden font-sans">
+        <div class="textos-container font-sans">
             {textos.map((item) => (
                 <div 
                     class={baseClasses}
@@ -26,7 +26,7 @@ const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg abs
                 </div>
             ))}
             <!-- Indicadores de posición -->
-            <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8">
+            <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8 font-sans">
                 {textos.map((_, index) => (
                     <div 
                         class={`${indicatorClasses} w-[400px] h-[80px] flex items-center justify-center`}
@@ -39,129 +39,98 @@ const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg abs
     </section>
 
     <script define:vars={{ buttonClasses, textos }}>
-        // Esperar a que el DOM esté listo
         window.onload = function() {
-            // Función para generar posición aleatoria
-            function getRandomPosition() {
-                const maxX = window.innerWidth - 200;
-                const maxY = window.innerHeight - 100;
-                return {
-                    x: Math.random() * maxX,
-                    y: Math.random() * maxY
-                };
-            }
-
-            // Verifica si un elemento está cerca de un slot específico
-            function isNearSlot(element, slotIndex) {
-                const rect = element.getBoundingClientRect();
-                const slots = document.querySelectorAll('[data-slot]');
-                const targetSlot = slots[slotIndex];
-                const slotRect = targetSlot.getBoundingClientRect();
-                
-                const elementCenterX = rect.left + rect.width / 2;
-                const elementCenterY = rect.top + rect.height / 2;
-                const slotCenterX = slotRect.left + slotRect.width / 2;
-                const slotCenterY = slotRect.top + slotRect.height / 2;
-                
-                const margin = 200;
-                return Math.abs(elementCenterX - slotCenterX) < margin && 
-                       Math.abs(elementCenterY - slotCenterY) < margin;
-            }
-
-            // Calcula la posición central para cada orden
-            function getCenterPosition(order) {
-                const slots = document.querySelectorAll('[data-slot]');
-                const targetSlot = slots[order - 1];
-                const slotRect = targetSlot.getBoundingClientRect();
-                
-                return {
-                    x: slotRect.left + (slotRect.width / 2) - 100,
-                    y: slotRect.top + (slotRect.height / 2) - 20
-                };
-            }
-
-            // Mueve un elemento a su posición correcta
-            function snapToPosition(element, order) {
-                const pos = getCenterPosition(order);
-                element.style.transition = 'all 0.5s ease';
-                element.style.left = `${pos.x}px`;
-                element.style.top = `${pos.y}px`;
-            }
-
-            // Verifica si todos los elementos están en sus slots correctos
-            function areAllInCorrectSlots() {
-                return [...elementos].every((elemento, index) => {
-                    const order = parseInt(elemento.getAttribute('data-order') || '0');
-                    return isNearSlot(elemento, order - 1);
-                });
-            }
-
-            // Selecciona los elementos y los posiciona aleatoriamente
+            // Posicionar elementos aleatoriamente al inicio
             const elementos = document.querySelectorAll('.texto-elemento');
             elementos.forEach(elemento => {
-                const pos = getRandomPosition();
-                elemento.style.left = `${pos.x}px`;
-                elemento.style.top = `${pos.y}px`;
+                const x = Math.random() * (window.innerWidth - 200);
+                const y = Math.random() * (window.innerHeight - 100);
+                elemento.style.left = `${x}px`;
+                elemento.style.top = `${y}px`;
             });
 
             let draggedItem = null;
 
             elementos.forEach(texto => {
-                texto.addEventListener('dragstart', (e) => {
-                    draggedItem = texto;
+                texto.addEventListener('mousedown', () => {
                     texto.style.cursor = 'grabbing';
-                    texto.style.transform = 'scale(1.1)';
-                    texto.style.opacity = '0.5';
-                    texto.style.zIndex = '2';
+                });
+
+                texto.addEventListener('mouseup', () => {
+                    texto.style.cursor = 'grab';
+                });
+
+                texto.addEventListener('mouseleave', () => {
+                    texto.style.cursor = 'grab';
+                });
+
+                texto.addEventListener('dragstart', () => {
+                    draggedItem = texto;
+                    texto.classList.add('scale-110', 'opacity-50', 'z-50');
+                    texto.style.cursor = 'grabbing';
                 });
 
                 texto.addEventListener('dragend', () => {
+                    texto.classList.remove('scale-110', 'opacity-50', 'z-50');
                     texto.style.cursor = 'grab';
-                    texto.style.transform = 'scale(1)';
-                    texto.style.opacity = '1';
-                    texto.style.zIndex = '1';
+
+                    // Obtener el orden del elemento
+                    const order = parseInt(texto.getAttribute('data-order'));
                     
-                    // Verificar si está cerca de algún slot
-                    const order = parseInt(texto.getAttribute('data-order') || '0');
-                    if (isNearSlot(texto, order - 1)) {
-                        snapToPosition(texto, order);
+                    // Obtener el rectángulo correspondiente
+                    const slot = document.querySelector(`[data-slot="${order}"]`);
+                    if (slot) {
+                        const slotRect = slot.getBoundingClientRect();
+                        const textoRect = texto.getBoundingClientRect();
+                        
+                        // Calcular la distancia entre el centro del texto y el centro del slot
+                        const textoCenterX = textoRect.left + textoRect.width / 2;
+                        const textoCenterY = textoRect.top + textoRect.height / 2;
+                        const slotCenterX = slotRect.left + slotRect.width / 2;
+                        const slotCenterY = slotRect.top + slotRect.height / 2;
+                        
+                        // Si está cerca del slot, pegarlo
+                        if (Math.abs(textoCenterX - slotCenterX) < 200 && 
+                            Math.abs(textoCenterY - slotCenterY) < 200) {
+                            texto.style.left = `${slotRect.left + (slotRect.width - textoRect.width) / 2}px`;
+                            texto.style.top = `${slotRect.top + (slotRect.height - textoRect.height) / 2}px`;
+                        }
                     }
                     
                     draggedItem = null;
                     checkOrder();
                 });
-
-                texto.addEventListener('dragover', e => {
-                    e.preventDefault();
-                });
-
-                texto.addEventListener('dragenter', e => {
-                    e.preventDefault();
-                });
-
-                texto.addEventListener('drop', e => {
-                    e.preventDefault();
-                    if (draggedItem !== texto) {
-                        const allTextos = [...elementos];
-                        const draggedIndex = allTextos.indexOf(draggedItem);
-                        const droppedIndex = allTextos.indexOf(texto);
-                        if (draggedIndex < droppedIndex) {
-                            texto.parentNode?.insertBefore(draggedItem, texto.nextSibling);
-                        } else {
-                            texto.parentNode?.insertBefore(draggedItem, texto);
-                        }
-                        checkOrder();
-                    }
-                });
             });
 
-            // Verifica el orden y si están en el centro para mostrar el botón
             function checkOrder() {
-                const currentOrder = [...elementos].map(texto => parseInt(texto.getAttribute('data-order') || '0'));
-                const isCorrect = currentOrder.every((order, index) => order === index + 1);
-                
-                // Solo si todos están en sus slots correctos y en orden correcto, mostramos el botón
-                if (areAllInCorrectSlots() && isCorrect) {
+                const slots = document.querySelectorAll('[data-slot]');
+                let allInPlace = true;
+                let correctOrder = true;
+
+                elementos.forEach((elemento, index) => {
+                    const order = parseInt(elemento.getAttribute('data-order'));
+                    const slot = slots[order - 1];
+                    const elementoRect = elemento.getBoundingClientRect();
+                    const slotRect = slot.getBoundingClientRect();
+
+                    // Verificar si está en su lugar
+                    const elementoCenterX = elementoRect.left + elementoRect.width / 2;
+                    const elementoCenterY = elementoRect.top + elementoRect.height / 2;
+                    const slotCenterX = slotRect.left + slotRect.width / 2;
+                    const slotCenterY = slotRect.top + slotRect.height / 2;
+
+                    if (Math.abs(elementoCenterX - slotCenterX) > 50 || 
+                        Math.abs(elementoCenterY - slotCenterY) > 50) {
+                        allInPlace = false;
+                    }
+
+                    // Verificar orden
+                    if (order !== index + 1) {
+                        correctOrder = false;
+                    }
+                });
+
+                if (allInPlace && correctOrder) {
                     const container = document.querySelector('.textos-container');
                     if (container) {
                         const fraseCompleta = textos.map(t => t.texto).join(' ');
