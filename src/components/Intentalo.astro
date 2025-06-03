@@ -1,0 +1,57 @@
+---
+interface Props {
+    texto: string;
+    orden: number;
+}
+
+const { texto, orden } = Astro.props;
+---
+
+<div class="intentalo-3d w-64 h-16 relative cursor-pointer select-none perspective-1000" data-orden={orden}>
+    <div class="intentalo-content w-full h-full bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-center justify-center text-center border border-white/20 transition-all duration-300 hover:border-white/40 transform-gpu preserve-3d">
+        <p class="text-white text-lg font-medium">{texto}</p>
+    </div>
+</div>
+
+<style>
+    .perspective-1000 {
+        perspective: 1000px;
+    }
+    
+    .preserve-3d {
+        transform-style: preserve-3d;
+    }
+    
+    .transform-gpu {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+</style>
+
+<script>
+    document.querySelectorAll('.intentalo-3d').forEach(element => {
+        element.addEventListener('mousemove', (e) => {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            const content = element.querySelector('.intentalo-content') as HTMLElement;
+            if (content) {
+                content.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
+            }
+        });
+        
+        element.addEventListener('mouseleave', () => {
+            const content = element.querySelector('.intentalo-content') as HTMLElement;
+            if (content) {
+                content.style.transform = 'rotateX(0) rotateY(0) translateZ(0)';
+            }
+        });
+    });
+</script> 
