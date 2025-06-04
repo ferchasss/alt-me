@@ -5,78 +5,80 @@ import Layout from '../layouts/Layout.astro';
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout title="Inicio">
-    <!-- Preloader -->
-    <div id="preloader" class="fixed inset-0 w-full h-screen flex items-center justify-center z-50 bg-[#CCFF00] transition-opacity duration-500 opacity-100 pointer-events-auto">
-        <h1 class="text-2xl md:text-3xl font-light text-black text-center select-none">
-            <span class="preloader-just font-black">just</span> <span id="preloader-swap-text">me</span>
-        </h1>
-    </div>
+<Layout title="Alt+Me">
+    <main class="min-h-screen bg-black">
+        <!-- Preloader -->
+        <div id="preloader" class="fixed inset-0 w-full h-screen flex items-center justify-center z-50 bg-[#CCFF00] transition-opacity duration-500 opacity-100 pointer-events-auto">
+            <h1 class="text-2xl md:text-3xl font-light text-black text-center select-none">
+                <span class="preloader-just font-black">just</span> <span id="preloader-swap-text">me</span>
+            </h1>
+        </div>
 
-    <!-- Frase fija en la parte superior -->
-    <div id="fixed-header" class="w-full py-4 px-4 fixed top-0 left-0 z-20 opacity-0 pointer-events-none transition-opacity duration-500 flex justify-center items-center">
-        <span class="text-black text-xl md:text-2xl lg:text-3xl font-bold tracking-wide font-sans text-center">just not me?</span>
-    </div>
+        <!-- Frase fija en la parte superior -->
+        <div id="fixed-header" class="w-full py-4 px-4 fixed top-0 left-0 z-20 opacity-0 pointer-events-none transition-opacity duration-500 flex justify-center items-center">
+            <span class="text-black text-xl md:text-2xl lg:text-3xl font-bold tracking-wide font-sans text-center">just not me?</span>
+        </div>
 
-    <!-- Contenido principal -->
-    <section id="main-content" class="w-full h-full flex items-center justify-center absolute top-0 left-0 font-sans pt-20 opacity-0 transition-opacity duration-500 pointer-events-none">
-        <a href="/intentalo" class="texto-central text-5xl md:text-6xl lg:text-7xl hover:font-bold font-light tracking-wide">
-            Me ves?
-        </a>
-    </section>
+        <!-- Contenido principal -->
+        <section id="main-content" class="w-full h-full flex items-center justify-center absolute top-0 left-0 font-sans pt-20 opacity-0 transition-opacity duration-500 pointer-events-none">
+            <a href="/intentalo" class="texto-central text-5xl md:text-6xl lg:text-7xl hover:font-bold font-light tracking-wide">
+                Me ves?
+            </a>
+        </section>
 
-    <style>
-        .texto-central {
-            font-size: clamp(2rem, 5vw, 3rem);
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: #CCFF00;
-            padding: 10px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .texto-central:hover {
-            opacity: 0.8;
-        }
-
-        /* .preloader-just {
-            /* font-family: 'Roboto Mono', monospace; /* Ejemplo de fuente diferente */ */
-            /* font-weight: 900; /* Opcional: para que destaque más */ */
-        /* } */
-    </style>
-
-    <script>
-        let showingMe = true;
-        const preloaderSwapText = document.getElementById('preloader-swap-text');
-        const preloader = document.getElementById('preloader');
-        const fixedHeader = document.getElementById('fixed-header');
-        const mainContent = document.getElementById('main-content');
-
-        // Animación de intercalado de texto
-        let interval = setInterval(() => {
-            if (preloaderSwapText) {
-                preloaderSwapText.textContent = showingMe ? 'not me?' : 'me';
-                showingMe = !showingMe;
+        <style>
+            .texto-central {
+                font-size: clamp(2rem, 5vw, 3rem);
+                text-align: center;
+                cursor: pointer;
+                text-decoration: none;
+                color: #CCFF00;
+                padding: 10px;
+                width: 100%;
+                max-width: 600px;
             }
-        }, 700);
 
-        // Ocultar preloader y mostrar contenido principal después de 3 segundos
-        setTimeout(() => {
-            clearInterval(interval); // Detener la animación
-            if (preloader) {
-                preloader.style.opacity = '0';
-                preloader.style.pointerEvents = 'none';
+            .texto-central:hover {
+                opacity: 0.8;
             }
-            if (fixedHeader) {
-                fixedHeader.style.opacity = '1';
-                fixedHeader.style.pointerEvents = 'auto';
-            }
-            if (mainContent) {
-                mainContent.style.opacity = '1';
-                mainContent.style.pointerEvents = 'auto';
-            }
-        }, 3000); // 3 segundos de duración del preloader
-    </script>
+
+            /* .preloader-just {
+                /* font-family: 'Roboto Mono', monospace; /* Ejemplo de fuente diferente */ */
+                /* font-weight: 900; /* Opcional: para que destaque más */ */
+            /* } */
+        </style>
+
+        <script>
+            let showingMe = true;
+            const preloaderSwapText = document.getElementById('preloader-swap-text');
+            const preloader = document.getElementById('preloader');
+            const fixedHeader = document.getElementById('fixed-header');
+            const mainContent = document.getElementById('main-content');
+
+            // Animación de intercalado de texto
+            let interval = setInterval(() => {
+                if (preloaderSwapText) {
+                    preloaderSwapText.textContent = showingMe ? 'not me?' : 'me';
+                    showingMe = !showingMe;
+                }
+            }, 700);
+
+            // Ocultar preloader y mostrar contenido principal después de 3 segundos
+            setTimeout(() => {
+                clearInterval(interval); // Detener la animación
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    preloader.style.pointerEvents = 'none';
+                }
+                if (fixedHeader) {
+                    fixedHeader.style.opacity = '1';
+                    fixedHeader.style.pointerEvents = 'auto';
+                }
+                if (mainContent) {
+                    mainContent.style.opacity = '1';
+                    mainContent.style.pointerEvents = 'auto';
+                }
+            }, 3000); // 3 segundos de duración del preloader
+        </script>
+    </main>
 </Layout>

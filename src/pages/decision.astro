@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Soy todas y ninguna">
+  <div class="min-h-screen bg-black flex flex-col items-center justify-center p-8">
+    <h1 class="text-4xl md:text-6xl text-white mb-16 text-center font-bold">Soy todas y ninguna</h1>
+    
+    <div class="flex flex-col md:flex-row gap-8">
+      <button onclick="window.location.href='/espejo'" class="bg-white text-black px-8 py-4 rounded-full text-xl font-bold hover:bg-gray-200 transition-colors">
+        Sí, quédate
+      </button>
+      <button onclick="window.location.href='/'" class="bg-white text-black px-8 py-4 rounded-full text-xl font-bold hover:bg-gray-200 transition-colors">
+        No, vuelve a dormir
+      </button>
+    </div>
+  </div>
+</Layout> 
