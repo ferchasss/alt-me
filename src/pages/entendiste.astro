@@ -1,0 +1,263 @@
+---
+import Layout from '../layouts/Layout.astro';
+import me from '../assets/me.png';
+import amigas from '../assets/amigas.jpg';
+import esencia from '../assets/esencia.jpg';
+import interior from '../assets/interior.jpg';
+import live from '../assets/live.jpg';
+import places from '../assets/places.jpg';
+import illustration from '../assets/illustration.png';
+---
+<Layout title="¿Crees que ya me entendiste?">
+  <section class="w-full min-h-screen bg-white relative overflow-hidden font-sans flex items-center justify-start">
+    <img src={me.src} alt="me" class="absolute inset-0 w-full h-full object-cover z-0 md:translate-x-32 lg:translate-x-48 xl:translate-x-64 transition-transform duration-500" />
+    <div class="relative z-10 max-w-xl w-full px-6 py-10 ml-0 md:ml-12 lg:ml-24 xl:ml-32">
+      <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-black leading-tight mb-2 text-left w-full">
+        <span class="animate-slide-left" style="--delay: 0s">CREES QUE</span><br>
+        <span class="animate-slide-right" style="--delay: 0.5s">YA ME</span><br>
+        <span class="animate-slide-bottom text-[#CCFF00]" style="--delay: 1s">ENTENDISTE</span><br>
+        <span class="animate-slide-left" style="--delay: 1.5s">SIGUE</span><br>
+        <span class="animate-slide-right" style="--delay: 2s">BAJANDO</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- Interactive Gallery Section -->
+  <section class="w-full min-h-screen bg-white relative overflow-hidden font-sans flex flex-col items-center justify-center py-12">
+    <div class="text-black text-center mb-8 z-10 fade-in-section">
+        <h2 class="text-3xl md:text-4xl font-bold">Mi cabeza</h2>
+        <p class="text-lg md:text-xl font-light">¿Qué es lo que hay verdaderamente dentro?</p>
+    </div>
+    <!-- Swiper -->
+    <div class="swiper mySwiper w-full max-h-[70vh] fade-in-section">
+      <div class="swiper-wrapper text-center">
+        <!-- Gallery Item Placeholder -->
+        <div class="swiper-slide aspect-square gallery-item flex flex-col items-center justify-end p-4 text-white rounded-lg shadow-lg relative overflow-hidden">
+          <img src={amigas.src} alt="amigas" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="relative z-10 p-4 w-full">
+            <h3 class="text-xl font-semibold drop-shadow-lg">Rosa khutor</h3>
+            <p class="text-sm font-light drop-shadow-lg">Krasnodar</p>
+          </div>
+        </div>
+        <!-- Repeat for more items -->
+         <div class="swiper-slide aspect-square gallery-item flex flex-col items-center justify-end p-4 text-white rounded-lg shadow-lg relative overflow-hidden">
+          <img src={esencia.src} alt="esencia" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="relative z-10 p-4 w-full">
+            <h3 class="text-xl font-semibold drop-shadow-lg">Vida</h3>
+            <p class="text-sm font-light drop-shadow-lg">Karachay-Cherkessia</p>
+          </div>
+        </div>
+         <div class="swiper-slide aspect-square gallery-item flex flex-col items-center justify-end p-4 text-white rounded-lg shadow-lg relative overflow-hidden">
+          <img src={interior.src} alt="interior" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="relative z-10 p-4 w-full">
+            <h3 class="text-xl font-semibold drop-shadow-lg">Amigos</h3>
+            <p class="text-sm font-light drop-shadow-lg">Altai Republic</p>
+          </div>
+        </div>
+         <div class="swiper-slide aspect-square gallery-item flex flex-col items-center justify-end p-4 text-white rounded-lg shadow-lg relative overflow-hidden">
+          <img src={live.src} alt="live" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="relative z-10 p-4 w-full">
+            <h3 class="text-xl font-semibold drop-shadow-lg">Esencia</h3>
+            <p class="text-sm font-light drop-shadow-lg">Siberia</p>
+          </div>
+        </div>
+          <div class="swiper-slide aspect-square gallery-item flex flex-col items-center justify-end p-4 text-white rounded-lg shadow-lg relative overflow-hidden">
+          <img src={places.src} alt="places" class="absolute inset-0 w-full h-full object-cover" />
+          <div class="relative z-10 p-4 w-full">
+            <h3 class="text-xl font-semibold drop-shadow-lg">Yo</h3>
+            <p class="text-sm font-light drop-shadow-lg">Murmansk</p>
+          </div>
+        </div>
+      </div>
+      <!-- Add Pagination -->
+      <div class="swiper-pagination"></div>
+    </div>
+    <!-- Metadata Placeholder -->
+    <div class="metadata text-black text-center mt-8 z-10 fade-in-section">
+       
+    </div>
+  </section>
+  <!-- Interactive Image Section -->
+  <section class="w-full min-h-[50vh] flex items-center justify-center">
+    <div class="relative w-96 h-96 cursor-pointer transition-transform duration-300 hover:scale-110" id="interactiveImage">
+      <img 
+        src={illustration.src} 
+        alt="Interactive Illustration" 
+        class="w-full h-full object-contain rounded-lg shadow-lg"
+      />
+    </div>
+  </section>
+
+  <style>
+    @keyframes slideFromLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideFromRight {
+      0% {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideFromBottom {
+      0% {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-slide-left {
+      display: inline-block;
+      opacity: 0;
+      animation: slideFromLeft 0.8s ease-out forwards;
+      animation-delay: var(--delay);
+    }
+
+    .animate-slide-right {
+      display: inline-block;
+      opacity: 0;
+      animation: slideFromRight 0.8s ease-out forwards;
+      animation-delay: var(--delay);
+    }
+
+    .animate-slide-bottom {
+      display: inline-block;
+      opacity: 0;
+      animation: slideFromBottom 0.8s ease-out forwards;
+      animation-delay: var(--delay);
+    }
+
+    /* Animaciones para el scroll */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(20px);
+      visibility: hidden;
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      will-change: opacity, visibility;
+    }
+
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    .swiper-slide {
+      opacity: 0.8;
+    }
+    .swiper-slide-active {
+      opacity: 2;
+    }
+
+    /* Estilos para la imagen interactiva */
+    #interactiveImage {
+      transition: all 0.5s ease-in-out;
+      background: white;
+      padding: 1rem;
+      border: 2px solid #f0f0f0;
+    }
+
+    #interactiveImage.expanded {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    #interactiveImage.expanded img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+    }
+  </style>
+  <script>
+    import { Swiper } from 'swiper';
+    import { Autoplay } from 'swiper/modules';
+    import SwiperSlide from 'swiper';
+    
+    var swiper = new Swiper(".mySwiper", {
+      modules: [Autoplay],
+      slidesPerView: 3,
+      spaceBetween: 30,
+      navigation: true,
+      loop: true,
+      centeredSlides: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+    });
+
+    // Función para manejar la animación al hacer scroll
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('.fade-in-section');
+      
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target); // Deja de observar una vez que se ha mostrado
+          }
+        });
+      }, observerOptions);
+
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+    });
+
+    // Script para la imagen interactiva
+    document.addEventListener('DOMContentLoaded', function() {
+      const interactiveImage = document.getElementById('interactiveImage');
+      
+      if (interactiveImage) {
+        interactiveImage.addEventListener('click', function() {
+          try {
+            this.classList.add('expanded');
+            
+            // Esperar a que termine la animación de expansión
+            setTimeout(() => {
+              window.location.href = '/espejo';
+            }, 500);
+          } catch (error) {
+            console.error('Error in click handler:', error);
+          }
+        });
+      }
+    });
+  </script>
+</Layout> 

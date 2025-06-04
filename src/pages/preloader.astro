@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Preloader">
+  <section class="w-full h-screen flex items-center justify-center fixed top-0 left-0 z-50">
+    <h1 id="preloader-text" class="text-3xl md:text-5xl lg:text-6xl font-light text-black text-center select-none transition-transform duration-700 m-0 p-0">
+      just <span id="swap-word" class="text-[#CCFF00]">me</span>
+    </h1>
+  </section>
+  <script>
+    let showingMe = true;
+    const swapWord = document.getElementById('swap-word');
+    const preloaderText = document.getElementById('preloader-text');
+    let interval = setInterval(() => {
+      if (swapWord) {
+        swapWord.textContent = showingMe ? 'not me?' : 'me';
+        showingMe = !showingMe;
+      }
+    }, 700);
+    setTimeout(() => {
+      clearInterval(interval);
+      if (swapWord) swapWord.textContent = 'not me?';
+      if (preloaderText) {
+        preloaderText.style.transform = 'translateY(-100vh)';
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 3000);
+      }
+    }, 1000);
+  </script>
+</Layout> 

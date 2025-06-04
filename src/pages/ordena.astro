@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import sombras from '../assets/sombras.jpg'; // Importar la imagen de fondo
 
 // Aquí puedes cambiar los textos que quieres mostrar
 const textos = [
@@ -8,15 +9,41 @@ const textos = [
     { texto: "hay semilla", orden: 3 }
 ];
 
+// Textos para los elementos flotantes aleatorios (puedes cambiarlos)
+const floatingTexts = [
+    "memoria que contengo",
+    "eco que respira",
+    "raíz mantenida dentro",
+    "susurro que grita",
+    "latido resonando",
+    "silencio que otorga",
+    "huella que permanece",
+    "pulso que da vida"
+];
+
 // Clases comunes para los elementos
-const baseClasses = "texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-light tracking-wide absolute select-none font-sans transition-all duration-300";
+const baseClasses = "texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-medium tracking-wide absolute select-none font-sans transition-all duration-300";
 const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-light tracking-wide hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl font-sans";
 const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300";
 ---
 
 <Layout title="Ordena">
-    <section class="w-full h-screen bg-black relative overflow-hidden font-sans">
-        <div class="textos-container font-sans">
+    <section class="w-full h-screen relative overflow-hidden font-sans">
+        <img src={sombras.src} alt="background image" class="absolute inset-0 w-full h-full object-cover z-0" />
+        
+        <!-- Contenedor para textos flotantes -->
+        <div id="floating-texts-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none;"></div>
+
+        <div class="textos-container font-sans relative w-full h-full z-10">
+            <!-- Indicadores de posición -->
+            <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-16 font-sans w-[400px] z-20">
+                {textos.map((_, index) => (
+                    <div 
+                        class={`${indicatorClasses} w-full h-[100px] flex items-center justify-center`}
+                        data-slot={index + 1}>
+                    </div>
+                ))}
+            </div>
             {textos.map((item) => (
                 <div 
                     class={baseClasses}
@@ -25,20 +52,42 @@ const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg abs
                     {item.texto}
                 </div>
             ))}
-            <!-- Indicadores de posición -->
-            <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-8 font-sans">
-                {textos.map((_, index) => (
-                    <div 
-                        class={`${indicatorClasses} w-[400px] h-[80px] flex items-center justify-center`}
-                        style={`top: ${index * 120}px;`}
-                        data-slot={index + 1}>
-                    </div>
-                ))}
-            </div>
         </div>
     </section>
 
-    <script define:vars={{ buttonClasses, textos }}>
+    <style>
+        /* Estilo básico para los textos flotantes */
+        .floating-text {
+            position: absolute;
+            color: rgba(204, 255, 0, 0.1); /* Verde lima con baja opacidad */
+            font-weight: light;
+            pointer-events: none; /* Ignorar eventos del ratón */
+            white-space: nowrap; /* Evitar que el texto se rompa en varias líneas */
+        }
+
+        /* Asegurar que el contenedor tenga suficiente espacio */
+        .textos-container {
+            min-height: 600px;
+            padding: 2rem;
+        }
+
+        /* Ajustar el tamaño de los textos para que quepan en las ranuras */
+        .texto-elemento {
+            max-width: 350px;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* Aquí añadiremos la animación CSS más adelante */
+        @keyframes float {
+            0% { transform: translate(var(--initial-translate-x), var(--initial-translate-y)) translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(var(--initial-translate-x), var(--initial-translate-y)) translate(calc(var(--random-x) * 5vw), calc(var(--random-y) * 5vh)); opacity: 0.8; }
+            100% { transform: translate(var(--initial-translate-x), var(--initial-translate-y)) translate(0, 0); opacity: 0.5; }
+        }
+
+    </style>
+
+    <script define:vars={{ buttonClasses, textos, floatingTexts }}>
         window.onload = function() {
             // Posicionar elementos aleatoriamente al inicio
             const elementos = document.querySelectorAll('.texto-elemento');
@@ -79,70 +128,148 @@ const indicatorClasses = "border-2 border-[#CCFF00] border-dashed rounded-lg abs
                     
                     // Obtener el rectángulo correspondiente
                     const slot = document.querySelector(`[data-slot="${order}"]`);
-                    if (slot) {
+                    const container = document.querySelector('.textos-container');
+                    if (slot && container) {
                         const slotRect = slot.getBoundingClientRect();
                         const textoRect = texto.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
                         
-                        // Calcular la distancia entre el centro del texto y el centro del slot
-                        const textoCenterX = textoRect.left + textoRect.width / 2;
-                        const textoCenterY = textoRect.top + textoRect.height / 2;
-                        const slotCenterX = slotRect.left + slotRect.width / 2;
-                        const slotCenterY = slotRect.top + slotRect.height / 2;
+                        // Calcular la posición para centrar el texto en la ranura
+                        const targetLeft = slotRect.left - containerRect.left;
+                        const targetTop = slotRect.top - containerRect.top;
                         
-                        // Si está cerca del slot, pegarlo
-                        if (Math.abs(textoCenterX - slotCenterX) < 200 && 
-                            Math.abs(textoCenterY - slotCenterY) < 200) {
-                            texto.style.left = `${slotRect.left + (slotRect.width - textoRect.width) / 2}px`;
-                            texto.style.top = `${slotRect.top + (slotRect.height - textoRect.height) / 2}px`;
-                        }
+                        // Aplicar la posición con una transición suave
+                        texto.style.transition = 'all 0.3s ease-out';
+                        texto.style.left = `${targetLeft}px`;
+                        texto.style.top = `${targetTop}px`;
+                        
+                        console.log(`Elemento ${order} posicionado en:`, {
+                            left: targetLeft,
+                            top: targetTop,
+                            slotLeft: slotRect.left,
+                            slotTop: slotRect.top,
+                            containerLeft: containerRect.left,
+                            containerTop: containerRect.top
+                        });
                     }
                     
                     draggedItem = null;
-                    checkOrder();
+                    console.log('Drag ended. Checking order...');
+                    // Aumentar el tiempo de espera para dar tiempo a la transición
+                    setTimeout(() => {
+                        checkOrder();
+                    }, 300);
                 });
             });
 
             function checkOrder() {
+                console.log('=== INICIANDO VERIFICACIÓN DE POSICIONES ===');
                 const slots = document.querySelectorAll('[data-slot]');
+                const container = document.querySelector('.textos-container');
+                console.log('Número de ranuras encontradas:', slots.length);
                 let allInPlace = true;
-                let correctOrder = true;
 
                 elementos.forEach((elemento, index) => {
-                    const order = parseInt(elemento.getAttribute('data-order'));
-                    const slot = slots[order - 1];
+                    console.log(`\nVerificando Elemento ${index + 1}:`);
+                    
                     const elementoRect = elemento.getBoundingClientRect();
-                    const slotRect = slot.getBoundingClientRect();
+                    let isInsideAnySlot = false;
 
-                    // Verificar si está en su lugar
-                    const elementoCenterX = elementoRect.left + elementoRect.width / 2;
-                    const elementoCenterY = elementoRect.top + elementoRect.height / 2;
-                    const slotCenterX = slotRect.left + slotRect.width / 2;
-                    const slotCenterY = slotRect.top + slotRect.height / 2;
+                    // Verificar si el elemento está dentro de cualquier ranura
+                    slots.forEach((slot, slotIndex) => {
+                        const slotRect = slot.getBoundingClientRect();
+                        const tolerance = 20; // 20px de tolerancia
 
-                    if (Math.abs(elementoCenterX - slotCenterX) > 50 || 
-                        Math.abs(elementoCenterY - slotCenterY) > 50) {
+                        const isInside = 
+                            elementoRect.left >= (slotRect.left - tolerance) &&
+                            elementoRect.right <= (slotRect.right + tolerance) &&
+                            elementoRect.top >= (slotRect.top - tolerance) &&
+                            elementoRect.bottom <= (slotRect.bottom + tolerance);
+
+                        if (isInside) {
+                            isInsideAnySlot = true;
+                            console.log(`  ✅ Elemento está dentro de la ranura ${slotIndex + 1}`);
+                        }
+                    });
+
+                    if (!isInsideAnySlot) {
                         allInPlace = false;
-                    }
-
-                    // Verificar orden
-                    if (order !== index + 1) {
-                        correctOrder = false;
+                        console.log(`  ❌ Elemento no está dentro de ninguna ranura`);
                     }
                 });
 
-                if (allInPlace && correctOrder) {
-                    const container = document.querySelector('.textos-container');
+                console.log('\n=== RESULTADO FINAL ===');
+                console.log(`¿Todos los elementos están dentro de alguna ranura? ${allInPlace ? '✅' : '❌'}`);
+
+                if (allInPlace) {
+                    console.log('\n=== CREANDO BOTÓN ===');
+                    console.log('¿Contenedor encontrado?', !!container);
+                    
                     if (container) {
-                        const fraseCompleta = textos.map(t => t.texto).join(' ');
-                        container.innerHTML = `
-                            <a href="/info" 
-                               class="${buttonClasses} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-[90%] md:max-w-[80%] lg:max-w-[70%]">
-                                ${fraseCompleta}
-                            </a>
-                        `;
+                        try {
+                            console.log('HTML antes de crear el botón:', container.innerHTML);
+                            const fraseCompleta = textos.map(t => t.texto).join(' ');
+                            console.log('Frase completa:', fraseCompleta);
+                            
+                            // Limpiar el contenedor antes de añadir el botón
+                            container.innerHTML = '';
+                            console.log('Contenedor limpiado');
+                            
+                            // Crear el botón y añadirlo al contenedor limpio
+                            const button = document.createElement('a');
+                            button.href = '/elige';
+                            button.className = `${buttonClasses} hover:font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-[90%] md:max-w-[80%] lg:max-w-[70%] z-30`;
+                            button.textContent = fraseCompleta;
+                            container.appendChild(button);
+                            console.log('Botón añadido al contenedor');
+                            console.log('HTML después de crear el botón:', container.innerHTML);
+                        } catch (error) {
+                            console.error('Error al crear el botón:', error);
+                        }
+                    } else {
+                        console.error('❌ No se encontró el contenedor para crear el botón');
                     }
                 }
             }
+
+            // Lógica para textos flotantes
+            const floatingTextsContainer = document.getElementById('floating-texts-container');
+
+            if (floatingTextsContainer) {
+                function createFloatingText() {
+                    const text = floatingTexts[Math.floor(Math.random() * floatingTexts.length)];
+                    const div = document.createElement('div');
+                    div.classList.add('floating-text', 'text-xl', 'md:text-2xl', 'lg:text-3xl');
+                    div.textContent = text;
+                    
+                    // Calcular posición inicial aleatoria en vw/vh
+                    const initialTranslateX = Math.random() * 100; // Porcentaje aleatorio entre 0 y 100
+                    const initialTranslateY = Math.random() * 100; // Porcentaje aleatorio entre 0 y 100
+                    
+                    // Establecer variables CSS para la posición inicial y la animación
+                    div.style.position = 'absolute'; // Asegurar posicionamiento absoluto dentro del contenedor fixed
+                    div.style.left = '0'; // Base para la traslación
+                    div.style.top = '0'; // Base para la traslación
+                    
+                    // Establecer variables CSS para la animación
+                    div.style.setProperty('--initial-translate-x', `${initialTranslateX}vw`); // Posición inicial X en vw
+                    div.style.setProperty('--initial-translate-y', `${initialTranslateY}vh`); // Posición inicial Y en vh
+                    div.style.setProperty('--random-x', (Math.random() - 0.5) * 2); // Valor entre -1 y 1 para dirección flotación
+                    div.style.setProperty('--random-y', (Math.random() - 0.5) * 2); // Valor entre -1 y 1 para dirección flotación
+                    
+                    // Aplicar animación
+                    div.style.animation = `float ${Math.random() * 10 + 5}s infinite ease-in-out alternate`; // Duración y retraso aleatorios
+
+                    floatingTextsContainer.appendChild(div);
+                }
+
+                // Crear varios textos flotantes
+                const numberOfFloatingTexts = 20; // Puedes ajustar cuántos quieres
+                for (let i = 0; i < numberOfFloatingTexts; i++) {
+                    createFloatingText();
+                }
+            }
+
         };
     </script>
 </Layout> 

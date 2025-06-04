@@ -5,26 +5,129 @@ import intentalo from '../assets/intentalo.png.jpg';
 ---
 
 <Layout title="Inténtalo">
-    <section class="w-full h-screen bg-black overflow-hidden font-sans">
-        <Image src={intentalo} alt="Intentalo" class="w-full h-full object-cover absolute top-0 left-0" />
+    <section class="w-full h-screen bg-black relative overflow-hidden font-sans flex items-center justify-center">
+        <div class="imagen-3d w-full h-full absolute inset-0">
+            <Image 
+                src={intentalo} 
+                alt="Intentalo" 
+                class="w-full h-full object-cover absolute top-0 left-0 transition-transform duration-300 opacity-75"
+            />
+        </div>
+        <!-- Texto de instrucción -->
+        <div id="instruccion-container" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-left text-xl md:text-2xl lg:text-3xl font-bold tracking-wide z-20 overflow-hidden max-w-xl">
+            <span id="instruccion-text">
+Algo en esta pantalla no está quieto del todo.
+No grita, no se mueve… pero espera.
+No todo es lo que parece a simple vista.
+Si miras bien, si te atreves a tocar lo que otros ignoran,
+quizá descubras lo que esta página guarda en silencio.
+
+¿Dónde? Eso tendrás que adivinarlo.
+Haz clic… donde creas que nadie mas lo haria.
+</span><span class="typing-cursor">|</span>
+        </div>
         <a 
             href="/ordena" 
             id="botonIntentalo"
-            class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-white px-6 py-6 rounded-md cursor-pointer hidden min-w-[120px] max-w-[300px] whitespace-nowrap hover:bg-[#b3e600] transition-all duration-300 text-xl md:text-2xl lg:text-3xl font-light tracking-wide hover:font-bold hover:opacity-80 font-sans">
+            class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-white px-6 py-6 rounded-md cursor-pointer hidden min-w-[120px] max-w-[300px] whitespace-nowrap hover:bg-[#b3e600] transition-all duration-300 text-xl md:text-2xl lg:text-3xl font-light tracking-wide hover:font-bold hover:opacity-80 font-sans z-20">
             Intentalo
         </a>
     </section>
 
+    <style>
+        .imagen-3d {
+            perspective: 1000px;
+        }
+        
+        /* Estilos para la animación de escritura */
+        #instruccion-container {
+            white-space: pre-wrap; /* Para mantener los saltos de línea */
+        }
+        #instruccion-container .typing-cursor {
+            display: inline-block;
+            animation: blink 0.7s infinite step-end;
+        }
+
+        /* Eliminamos la animación 'typing' del CSS y la manejamos en JS */
+        /* @keyframes typing { from { width: 0 } to { width: 100% } } */
+
+        @keyframes blink {
+            from, to { border-right-color: transparent }
+            50% { border-right-color: white; }
+        }
+
+    </style>
+
     <script>
         const boton = document.getElementById('botonIntentalo');
+        const instruccionContainer = document.getElementById('instruccion-container');
+        const instruccionTextElement = document.getElementById('instruccion-text');
+        // Usamos textContent para obtener el texto multilínea
+        const originalText = instruccionTextElement?.textContent || '';
         let botonVisible = false;
 
-        document.body.addEventListener('click', () => {
-            if (!botonVisible && boton) {
-                boton.classList.remove('hidden');
-                boton.classList.add('block');
-                botonVisible = true;
+        // Lógica de la animación de escritura
+        if (instruccionTextElement) {
+             instruccionTextElement.textContent = ''; // Clear text initially
+            let i = 0;
+            const speed = 30; // Velocidad de escritura en ms por caracter (ajustada)
+
+            function typeWriter() {
+                if (!instruccionTextElement) return; // Add null check
+                if (i < originalText.length) {
+                    // Añadimos caracteres uno por uno
+                    instruccionTextElement.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                } else {
+                    // Opcional: hacer algo al finalizar la escritura
+                    // Por ejemplo, mostrar el cursor parpadeante final si lo ocultamos durante la escritura
+                }
+            }
+
+            typeWriter(); // Start typing animation
+        }
+
+
+        document.body.addEventListener('click', (e) => { // Removed type annotation for compatibility
+            // Verificamos que el texto escrito sea igual al original para saber si terminó
+            if (!botonVisible && boton && instruccionContainer && instruccionTextElement && instruccionTextElement.textContent === originalText) {
+                 // Retraso opcional antes de ocultar y mostrar el botón para dar tiempo a leer
+                 setTimeout(() => {
+                    boton.classList.remove('hidden');
+                    boton.classList.add('block');
+                    botonVisible = true;
+                 }, 200); // Pequeño retraso de 200ms
             }
         });
+
+        // Efecto 3D para la imagen
+        const imagen3D = document.querySelector('.imagen-3d');
+        // Corregido: Agregado tipo HTMLElement para imagen3D
+        if (imagen3D instanceof HTMLElement) { // Removed null check for consistency
+            imagen3D.addEventListener('mousemove', (e) => { // Removed type annotation for compatibility
+                const rect = imagen3D.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 40;
+                const rotateY = (centerX - x) / 40;
+                
+                const imagen = imagen3D.querySelector('img'); // Obtenemos la imagen dentro del listener
+                if (imagen) {
+                     imagen.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.1)`;
+                }
+            });
+            
+            imagen3D.addEventListener('mouseleave', () => {
+                const imagen = imagen3D.querySelector('img'); // Obtenemos la imagen dentro del listener
+                 if (imagen) {
+                     imagen.style.transform = 'rotateX(0) rotateY(0) scale(1)';
+                 }
+            });
+        }
     </script>
 </Layout> 
