@@ -36,16 +36,31 @@ import Layout from '../layouts/Layout.astro';
                 padding: 10px;
                 width: 100%;
                 max-width: 600px;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
             }
 
             .texto-central:hover {
                 opacity: 0.8;
             }
 
-            /* .preloader-just {
-                /* font-family: 'Roboto Mono', monospace; /* Ejemplo de fuente diferente */ */
-                /* font-weight: 900; /* Opcional: para que destaque más */ */
-            /* } */
+            /* Ajustes para dispositivos móviles */
+            @media (max-width: 768px) {
+                #fixed-header {
+                    padding: 1rem;
+                }
+                
+                #main-content {
+                    padding-top: 4rem;
+                }
+            }
+
+            /* Ajustes para dispositivos muy pequeños */
+            @media (max-width: 480px) {
+                .texto-central {
+                    font-size: clamp(1.5rem, 4vw, 2.5rem);
+                }
+            }
         </style>
 
         <script>

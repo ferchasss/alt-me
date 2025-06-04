@@ -200,8 +200,6 @@ import illustration from '../assets/illustration.png';
     
     var swiper = new Swiper(".mySwiper", {
       modules: [Autoplay],
-      slidesPerView: 3,
-      spaceBetween: 30,
       navigation: true,
       loop: true,
       centeredSlides: true,
@@ -212,6 +210,16 @@ import illustration from '../assets/illustration.png';
       autoplay: {
         delay: 3000,
         disableOnInteraction: false,
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+          spaceBetween: 10,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
       },
     });
 

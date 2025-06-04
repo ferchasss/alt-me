@@ -19,18 +19,18 @@ import feliz from '../assets/feliz.png';
 <style>
   .mirror-container {
     position: absolute;
-    width: 300px;
-    height: 400px;
+    width: min(300px, 80vw); /* Responsive width */
+    height: min(400px, 90vw); /* Responsive height */
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    /* Ajustar la posición para centrarlo mejor en el espejo */
     top: 55%;
     left: 51%;
     transform: translate(-50%, -50%);
+    cursor: pointer; /* Indicar que es clickeable */
   }
 
   .image-container {
@@ -58,6 +58,22 @@ import feliz from '../assets/feliz.png';
 
   .image-container:hover .hover-image {
     opacity: 1;
+  }
+
+  /* Ajustes para dispositivos móviles */
+  @media (max-width: 768px) {
+    .mirror-container {
+      width: 250px;
+      height: 350px;
+    }
+  }
+
+  /* Ajustes para dispositivos muy pequeños */
+  @media (max-width: 480px) {
+    .mirror-container {
+      width: 200px;
+      height: 300px;
+    }
   }
 </style>
 

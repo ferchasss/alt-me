@@ -104,6 +104,19 @@ const collageImages = [
             animation: textFadeInUp 1s ease-out forwards;
             opacity: 0; /* Start invisible */
         }
+
+        /* Ajustes responsivos para el collage */
+        @media (max-width: 768px) {
+            .collage-element {
+                max-width: 80vw;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .collage-element {
+                max-width: 90vw;
+            }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
