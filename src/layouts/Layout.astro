@@ -21,8 +21,13 @@ const { title } = Astro.props;
 		<title>{title}</title>
 		<!-- Link Swiper's CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- CDNs para p5.js y Matter.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
 	</head>
-	<body class="w-full min-h-screen bg-black text-white">
+	<body class="w-full min-h-screen bg-white text-black">
 		<main class="w-full min-h-screen">
 			<slot />
 		</main>

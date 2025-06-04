@@ -23,7 +23,7 @@ import illustration from '../assets/illustration.png';
   </section>
 
   <!-- Interactive Gallery Section -->
-  <section class="w-full min-h-screen bg-white relative overflow-hidden font-sans flex flex-col items-center justify-center py-12">
+  <section class="w-full min-h-screen bg-white relative overflow-hidden font-sans flex flex-col items-center justify-center py-0">
     <div class="text-black text-center mb-8 z-10 fade-in-section">
         <h2 class="text-3xl md:text-4xl font-bold">Mi cabeza</h2>
         <p class="text-lg md:text-xl font-light">¿Qué es lo que hay verdaderamente dentro?</p>
@@ -78,7 +78,7 @@ import illustration from '../assets/illustration.png';
     </div>
   </section>
   <!-- Interactive Image Section -->
-  <section class="w-full min-h-[50vh] flex items-center justify-center">
+  <section class="w-full min-h-[50vh] flex items-center justify-center py-0">
     <div class="relative w-96 h-96 cursor-pointer transition-transform duration-300 hover:scale-110" id="interactiveImage">
       <img 
         src={illustration.src} 
@@ -168,9 +168,8 @@ import illustration from '../assets/illustration.png';
     /* Estilos para la imagen interactiva */
     #interactiveImage {
       transition: all 0.5s ease-in-out;
-      background: white;
-      padding: 1rem;
-      border: 2px solid #f0f0f0;
+      background: none !important;
+      padding: 0 !important;
     }
 
     #interactiveImage.expanded {
@@ -184,7 +183,7 @@ import illustration from '../assets/illustration.png';
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 0 !important;
     }
 
     #interactiveImage.expanded img {

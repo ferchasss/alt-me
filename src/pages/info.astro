@@ -1,76 +1,108 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
-import Card3D from '../components/Card3D.astro';
 // Importa tus imágenes aquí
-// import imagen1 from '../assets/imagen1.jpg';
-// import imagen2 from '../assets/imagen2.jpg';
+import antro from '../assets/antro.jpg'; // Cambiado a .jpg
+import dormida from '../assets/dormida.jpg';
+import fotosecuencia from '../assets/fotosecuencia.jpg';
+import gomitas from '../assets/gomitas.png';
+import juan from '../assets/juan.jpg';
+import toalla from '../assets/toalla.png';
+import volteado from '../assets/volteado.jpg';
+import xime from '../assets/xime.jpg';
+// La ilustración ya no se usa en esta página, se elimina la importación
 
-// Reutilizamos las clases comunes
-const titleClasses = "text-3xl md:text-4xl font-bold text-[#CCFF00] font-sans";
-const textClasses = "text-lg text-white font-sans font-light tracking-wide";
-const imageContainerClasses = "relative aspect-square";
-const sectionClasses = "space-y-6";
-const gridClasses = "grid md:grid-cols-2 gap-8 items-center";
+// Texto de ejemplo para el collage (ajustado color y peso de fuente)
+const collageText = [
+  { content: "Memorias", class: "text-4xl md:text-5xl font-bold text-black absolute top-[5%] left-[10%] z-25" }, /* Negro y negrita */
+  { content: "Fragmentos", class: "text-2xl md:text-3xl font-bold text-black absolute top-[25%] right-[5%] z-23" }, /* Negro y negrita */
+  { content: "Instantes", class: "text-xl md:text-2xl font-bold text-black absolute bottom-[10%] left-[5%] z-24" }, /* Negro y negrita */
+  { content: "Reflejos", class: "text-3xl md:text-4xl font-bold text-black absolute bottom-[15%] right-[10%] z-22" }, /* Negro y negrita */
+];
+
+// Imágenes y su posicionamiento y tamaño (z-index ajustado anteriormente)
+const collageImages = [
+    { src: antro, alt: "Antro", style: "width: 25%; top: 10%; left: 50%; z-index: 5;" },
+    { src: dormida, alt: "Dormida", style: "width: 20%; top: 45%; left: 15%; z-index: 8;" },
+    { src: fotosecuencia, alt: "Fotosecuencia", style: "width: 30%; top: 15%; right: 10%; z-index: 1;" },
+    { src: gomitas, alt: "Gomitas", style: "width: 45%; bottom: 5%; right: 5%; z-index: 20;" }, // PNG - Mayor tamaño
+    { src: juan, alt: "Juan", style: "width: 28%; bottom: 10%; left: 40%; z-index: 6;" },
+    { src: toalla, alt: "Toalla", style: "width: 40%; top: 55%; right: 35%; z-index: 21;" }, // PNG - Mayor tamaño
+    { src: volteado, alt: "Volteado", style: "width: 23%; top: 30%; left: 30%; z-index: 9;" },
+    { src: xime, alt: "Xime", style: "width: 35%; bottom: 20%; left: 10%; z-index: 3;" },
+];
 ---
 
 <Layout title="Información">
-    <main class="min-h-screen bg-black p-8 font-sans">
-        <div class="max-w-4xl mx-auto space-y-12">
-            <!-- Sección de Tarjetas 3D -->
-            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-12">
-                <Card3D 
-                    title="Sección 1"
-                    description="Descripción de la primera sección con efecto 3D"
-                    imageUrl="/intentalo.png"
+    <main class="min-h-screen bg-black font-sans">
+        <!-- Sección Collage -->
+        <section class="w-full min-h-screen relative overflow-hidden bg-white p-8">
+            {collageImages.map((image, index) => (
+                <Image 
+                    src={image.src}
+                    alt={image.alt}
+                    class={`absolute object-contain collage-element animate-float-${(index % 3) + 1}`}
+                    style={`${image.style} animation-delay: ${index * 0.2}s;`}
+                    widths={[300, 600, 900]}
+                    sizes="(max-width: 768px) 100vw, 50vw"
                 />
-                <Card3D 
-                    title="Sección 2"
-                    description="Descripción de la segunda sección con efecto 3D"
-                    imageUrl="/intentalo.png"
-                />
-                <Card3D 
-                    title="Sección 3"
-                    description="Descripción de la tercera sección con efecto 3D"
-                    imageUrl="/intentalo.png"
-                />
-            </section>
-
-            <!-- Sección 1 -->
-            <section class={sectionClasses}>
-                <h2 class={titleClasses}>Título Sección 1</h2>
-                <div class={gridClasses}>
-                    <div class="space-y-4">
-                        <p class={textClasses}>
-                            Tu texto descriptivo aquí. Puedes escribir todo lo que quieras sobre esta sección.
-                        </p>
-                    </div>
-                    <div class={imageContainerClasses}>
-                        <!-- Reemplaza con tu imagen -->
-                        <div class="w-full h-full bg-[#CCFF00] opacity-20 rounded-lg"></div>
-                        <!-- <Image src={imagen1} alt="Descripción" class="rounded-lg object-cover" /> -->
-                    </div>
+            ))}
+             {collageText.map((text, index) => (
+                <div 
+                    class={`${text.class} collage-element animate-text-fade-in-up`}
+                    style={`animation-delay: ${collageImages.length * 0.2 + index * 0.3}s;`}
+                >
+                    {text.content}
                 </div>
-            </section>
-
-            <!-- Sección 2 -->
-            <section class={sectionClasses}>
-                <h2 class={titleClasses}>Título Sección 2</h2>
-                <div class={gridClasses}>
-                    <div class={`${imageContainerClasses} order-2 md:order-1`}>
-                        <!-- Reemplaza con tu imagen -->
-                        <div class="w-full h-full bg-[#CCFF00] opacity-20 rounded-lg"></div>
-                        <!-- <Image src={imagen2} alt="Descripción" class="rounded-lg object-cover" /> -->
-                    </div>
-                    <div class="space-y-4 order-1 md:order-2">
-                        <p class={textClasses}>
-                            Tu texto descriptivo aquí. Puedes escribir todo lo que quieras sobre esta sección.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Puedes agregar más secciones siguiendo el mismo patrón -->
-        </div>
+            ))}
+        </section>
     </main>
+    <style>
+        .collage-element {
+            pointer-events: none; /* Ignorar clicks */
+        }
+
+        @keyframes float1 {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes float2 {
+            0% { transform: translate(0, 0) rotate(0deg); } /* Combinado */
+            50% { transform: translate(-15px, 10px) rotate(5deg); } /* Combinado */
+            100% { transform: translate(0, 0) rotate(0deg); } /* Combinado */
+        }
+
+         @keyframes float3 {
+            0% { transform: translate(0, 0) rotate(0deg); } /* Combinado */
+            50% { transform: translate(20px, -10px) rotate(-3deg); } /* Combinado */
+            100% { transform: translate(0, 0) rotate(0deg); } /* Combinado */
+        }
+
+        .animate-float-1 {
+            animation: float1 10s ease-in-out infinite;
+        }
+
+        .animate-float-2 {
+            animation: float2 12s ease-in-out infinite;
+        }
+
+        .animate-float-3 {
+            animation: float3 11s ease-in-out infinite;
+        }
+
+         @keyframes textFadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-text-fade-in-up {
+            animation: textFadeInUp 1s ease-out forwards;
+            opacity: 0; /* Start invisible */
+        }
+    </style>
+    <script>
+      // No hay scripts específicos para esta página ahora.
+    </script>
 </Layout> 
