@@ -57,6 +57,12 @@ const collageImages = [
             ))}
         </section>
     </main>
+    <!-- Sección para p5.js y Matter.js -->
+    <section id="p5-matter-section" class="w-full h-screen relative overflow-hidden">
+        <!-- Eliminar el botón y mantener solo el SVG -->
+        <svg id="drawing-canvas" class="absolute top-0 left-0 w-full h-full pointer-events-auto"></svg>
+    </section>
+
     <style>
         .collage-element {
             pointer-events: none; /* Ignorar clicks */
@@ -105,4 +111,5 @@ const collageImages = [
     <script>
       // No hay scripts específicos para esta página ahora.
     </script>
+    <script type="module" src="/src/fer.js"></script>
 </Layout> 
