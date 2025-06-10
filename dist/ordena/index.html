@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="apple-touch-icon" sizes="180x180" href="/see-me/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/see-me/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/see-me/favicon-16x16.png"><link rel="manifest" href="/site.webmanifest"><meta name="generator" content="Astro v5.7.13"><title>Ordena</title><!-- Link Swiper's CSS --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"><!-- CDNs para p5.js --><script type="module" src="/see-me/_astro/Layout.astro_astro_type_script_index_0_lang.BIY3RZgi.js"></script><link rel="stylesheet" href="/see-me/_astro/decision.BlO8Mofb.css">
+<style>.floating-text[data-astro-cid-z4h3ovpf]{position:absolute;color:#ccff001a;font-weight:light;pointer-events:none;white-space:nowrap}.textos-container[data-astro-cid-z4h3ovpf]{min-height:600px;padding:2rem}.texto-elemento[data-astro-cid-z4h3ovpf]{max-width:350px;text-align:center;padding:1rem}@keyframes float{0%{transform:translate(var(--initial-translate-x),var(--initial-translate-y)) translate(0);opacity:.5}50%{transform:translate(var(--initial-translate-x),var(--initial-translate-y)) translate(calc(var(--random-x) * 5vw),calc(var(--random-y) * 5vh));opacity:.8}to{transform:translate(var(--initial-translate-x),var(--initial-translate-y)) translate(0);opacity:.5}}
+</style></head> <body class="w-full min-h-screen bg-white text-black"> <main class="w-full min-h-screen">  <section class="w-full h-screen relative overflow-hidden font-sans" data-astro-cid-z4h3ovpf> <img src="/see-me/_astro/sombras.CeoUwQdX.jpg" alt="background image" class="absolute inset-0 w-full h-full object-cover z-0" data-astro-cid-z4h3ovpf> <!-- Contenedor para textos flotantes --> <div id="floating-texts-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none;" data-astro-cid-z4h3ovpf></div> <div class="textos-container font-sans relative w-full h-full z-10" data-astro-cid-z4h3ovpf> <!-- Indicadores de posición --> <div id="indicadores" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-16 font-sans w-[400px] z-20" data-astro-cid-z4h3ovpf> <div class="border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300 w-full h-[100px] flex items-center justify-center" data-slot="1" data-astro-cid-z4h3ovpf></div><div class="border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300 w-full h-[100px] flex items-center justify-center" data-slot="2" data-astro-cid-z4h3ovpf></div><div class="border-2 border-[#CCFF00] border-dashed rounded-lg absolute transition-all duration-300 w-full h-[100px] flex items-center justify-center" data-slot="3" data-astro-cid-z4h3ovpf></div> </div> <div class="texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-medium tracking-wide absolute select-none font-sans transition-all duration-300" draggable="true" data-order="1" data-astro-cid-z4h3ovpf> En lo profundo... </div><div class="texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-medium tracking-wide absolute select-none font-sans transition-all duration-300" draggable="true" data-order="2" data-astro-cid-z4h3ovpf> no hay sombra </div><div class="texto-elemento text-[#CCFF00] cursor-grab text-xl md:text-2xl lg:text-3xl font-medium tracking-wide absolute select-none font-sans transition-all duration-300" draggable="true" data-order="3" data-astro-cid-z4h3ovpf> hay semilla </div> </div> </section>  <script>(function(){const buttonClasses = "bg-[#CCFF00] text-black px-8 py-4 rounded-lg cursor-pointer text-xl md:text-2xl lg:text-3xl font-light tracking-wide hover:bg-[#b3e600] hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl font-sans";
+const textos = [{"texto":"En lo profundo...","orden":1},{"texto":"no hay sombra","orden":2},{"texto":"hay semilla","orden":3}];
+const floatingTexts = ["memoria que contengo","eco que respira","raíz mantenida dentro","susurro que grita","latido resonando","silencio que otorga","huella que permanece","pulso que da vida"];
+
+        window.onload = function() {
+            // Posicionar elementos aleatoriamente al inicio
+            const elementos = document.querySelectorAll('.texto-elemento');
+            elementos.forEach(elemento => {
+                const x = Math.random() * (window.innerWidth - 200);
+                const y = Math.random() * (window.innerHeight - 100);
+                elemento.style.left = `${x}px`;
+                elemento.style.top = `${y}px`;
+            });
+
+            let draggedItem = null;
+
+            elementos.forEach(texto => {
+                texto.addEventListener('mousedown', () => {
+                    texto.style.cursor = 'grabbing';
+                });
+
+                texto.addEventListener('mouseup', () => {
+                    texto.style.cursor = 'grab';
+                });
+
+                texto.addEventListener('mouseleave', () => {
+                    texto.style.cursor = 'grab';
+                });
+
+                texto.addEventListener('dragstart', () => {
+                    draggedItem = texto;
+                    texto.classList.add('scale-110', 'opacity-50', 'z-50');
+                    texto.style.cursor = 'grabbing';
+                });
+
+                texto.addEventListener('dragend', () => {
+                    texto.classList.remove('scale-110', 'opacity-50', 'z-50');
+                    texto.style.cursor = 'grab';
+
+                    // Obtener el orden del elemento
+                    const order = parseInt(texto.getAttribute('data-order'));
+                    
+                    // Obtener el rectángulo correspondiente
+                    const slot = document.querySelector(`[data-slot="${order}"]`);
+                    const container = document.querySelector('.textos-container');
+                    if (slot && container) {
+                        const slotRect = slot.getBoundingClientRect();
+                        const textoRect = texto.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+                        
+                        // Calcular la posición para centrar el texto en la ranura
+                        const targetLeft = slotRect.left - containerRect.left;
+                        const targetTop = slotRect.top - containerRect.top;
+                        
+                        // Aplicar la posición con una transición suave
+                        texto.style.transition = 'all 0.3s ease-out';
+                        texto.style.left = `${targetLeft}px`;
+                        texto.style.top = `${targetTop}px`;
+                        
+                        console.log(`Elemento ${order} posicionado en:`, {
+                            left: targetLeft,
+                            top: targetTop,
+                            slotLeft: slotRect.left,
+                            slotTop: slotRect.top,
+                            containerLeft: containerRect.left,
+                            containerTop: containerRect.top
+                        });
+                    }
+                    
+                    draggedItem = null;
+                    console.log('Drag ended. Checking order...');
+                    // Aumentar el tiempo de espera para dar tiempo a la transición
+                    setTimeout(() => {
+                        checkOrder();
+                    }, 300);
+                });
+            });
+
+            function checkOrder() {
+                console.log('=== INICIANDO VERIFICACIÓN DE POSICIONES ===');
+                const slots = document.querySelectorAll('[data-slot]');
+                const container = document.querySelector('.textos-container');
+                console.log('Número de ranuras encontradas:', slots.length);
+                let allInPlace = true;
+
+                elementos.forEach((elemento, index) => {
+                    console.log(`\nVerificando Elemento ${index + 1}:`);
+                    
+                    const elementoRect = elemento.getBoundingClientRect();
+                    let isInsideAnySlot = false;
+
+                    // Verificar si el elemento está dentro de cualquier ranura
+                    slots.forEach((slot, slotIndex) => {
+                        const slotRect = slot.getBoundingClientRect();
+                        const tolerance = 20; // 20px de tolerancia
+
+                        const isInside = 
+                            elementoRect.left >= (slotRect.left - tolerance) &&
+                            elementoRect.right <= (slotRect.right + tolerance) &&
+                            elementoRect.top >= (slotRect.top - tolerance) &&
+                            elementoRect.bottom <= (slotRect.bottom + tolerance);
+
+                        if (isInside) {
+                            isInsideAnySlot = true;
+                            console.log(`  ✅ Elemento está dentro de la ranura ${slotIndex + 1}`);
+                        }
+                    });
+
+                    if (!isInsideAnySlot) {
+                        allInPlace = false;
+                        console.log(`  ❌ Elemento no está dentro de ninguna ranura`);
+                    }
+                });
+
+                console.log('\n=== RESULTADO FINAL ===');
+                console.log(`¿Todos los elementos están dentro de alguna ranura? ${allInPlace ? '✅' : '❌'}`);
+
+                if (allInPlace) {
+                    console.log('\n=== CREANDO BOTÓN ===');
+                    console.log('¿Contenedor encontrado?', !!container);
+                    
+                    if (container) {
+                        try {
+                            console.log('HTML antes de crear el botón:', container.innerHTML);
+                            const fraseCompleta = textos.map(t => t.texto).join(' ');
+                            console.log('Frase completa:', fraseCompleta);
+                            
+                            // Limpiar el contenedor antes de añadir el botón
+                            container.innerHTML = '';
+                            console.log('Contenedor limpiado');
+                            
+                            // Crear el botón y añadirlo al contenedor limpio
+                            const button = document.createElement('a');
+                            button.href = '/see-me/elige';
+                            button.className = `${buttonClasses} hover:font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center max-w-[90%] md:max-w-[80%] lg:max-w-[70%] z-30`;
+                            button.textContent = fraseCompleta;
+                            container.appendChild(button);
+                            console.log('Botón añadido al contenedor');
+                            console.log('HTML después de crear el botón:', container.innerHTML);
+                        } catch (error) {
+                            console.error('Error al crear el botón:', error);
+                        }
+                    } else {
+                        console.error('❌ No se encontró el contenedor para crear el botón');
+                    }
+                }
+            }
+
+            // Lógica para textos flotantes
+            const floatingTextsContainer = document.getElementById('floating-texts-container');
+
+            if (floatingTextsContainer) {
+                function createFloatingText() {
+                    const text = floatingTexts[Math.floor(Math.random() * floatingTexts.length)];
+                    const div = document.createElement('div');
+                    div.classList.add('floating-text', 'text-xl', 'md:text-2xl', 'lg:text-3xl');
+                    div.textContent = text;
+                    
+                    // Calcular posición inicial aleatoria en vw/vh
+                    const initialTranslateX = Math.random() * 100; // Porcentaje aleatorio entre 0 y 100
+                    const initialTranslateY = Math.random() * 100; // Porcentaje aleatorio entre 0 y 100
+                    
+                    // Establecer variables CSS para la posición inicial y la animación
+                    div.style.position = 'absolute'; // Asegurar posicionamiento absoluto dentro del contenedor fixed
+                    div.style.left = '0'; // Base para la traslación
+                    div.style.top = '0'; // Base para la traslación
+                    
+                    // Establecer variables CSS para la animación
+                    div.style.setProperty('--initial-translate-x', `${initialTranslateX}vw`); // Posición inicial X en vw
+                    div.style.setProperty('--initial-translate-y', `${initialTranslateY}vh`); // Posición inicial Y en vh
+                    div.style.setProperty('--random-x', (Math.random() - 0.5) * 2); // Valor entre -1 y 1 para dirección flotación
+                    div.style.setProperty('--random-y', (Math.random() - 0.5) * 2); // Valor entre -1 y 1 para dirección flotación
+                    
+                    // Aplicar animación
+                    div.style.animation = `float ${Math.random() * 10 + 5}s infinite ease-in-out alternate`; // Duración y retraso aleatorios
+
+                    floatingTextsContainer.appendChild(div);
+                }
+
+                // Crear varios textos flotantes
+                const numberOfFloatingTexts = 20; // Puedes ajustar cuántos quieres
+                for (let i = 0; i < numberOfFloatingTexts; i++) {
+                    createFloatingText();
+                }
+            }
+
+        };
+    })();</script>  </main>  </body></html>
